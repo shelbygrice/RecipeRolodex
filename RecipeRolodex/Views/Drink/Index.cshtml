@@ -1,0 +1,77 @@
+﻿@model IEnumerable<RecipeRolodex.Models.Drink>
+
+@{
+    ViewBag.Title = "Drinks";
+}
+
+<h2>Drinks</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ingredients)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsStarred)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedUtc)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Ingredients)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsStarred)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedUtc)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.DrinkId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.DrinkId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.DrinkId })
+        </td>
+    </tr>
+}
+
+</table>
+
+@section scripts {
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            $("i[data-toggle='star']")
+                .css({ "cursor": "pointer" })
+                .click(function (e) {
+                    var target = $(e.target);
+                    var noteId = target.attr("data-id");
+                    var starSet = target.hasClass("glyphicon-star");
+
+                    $.ajax({
+                        method: starSet ? "DELETE" : "PUT",
+                        url: "/api/note/" + noteId + "/star",
+                        data: null
+                    })
+                    .done(function (r) {
+                        target.removeClass();
+                        target.addClass("glyphicon " + (starSet ? "glyphicon-star-empty" : "glyphicon-star"));
+                    })
+                    .fail(function (r) {
+                        alert("Failed to change star status");
+                    });
+                });
+        });
+    </script>
+}
